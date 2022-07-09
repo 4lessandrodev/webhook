@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<style>
+	body{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	.hidden {
+		display: none;
+	}
+
+	@keyframes spCircRot {
+		from { transform: rotate(0deg); }
+		to { transform: rotate(359deg); }
+	}
+	.loading {
+		margin: 0.5rem;
+		display: flex;
+		height: 4rem;
+		width: 4rem;
+		border-radius: 50%;
+		border: 0.5rem solid rgb(38, 50, 141);
+		animation: spCircRot .6s infinite linear;
+	}
+
+
+	.loading::after{
+		content: '*';
+		font-weight: bold;
+		color: beige;
+	}
+
+	.submit {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 1rem 3rem;
+		font-weight: 1.3rem;
+		font-weight: bold;
+		color: white;
+		border: none;
+		border-radius: 0.3rem;
+		text-transform: uppercase;
+		background-color: rgb(33, 74, 33);
+	}
+
+	.loading-container {
+		text-align: center;
+	}
+
+	.item {
+		font-weight: bold;
+		font-size: 1.3rem;
+		padding: 0.5rem;
+		border: 0.2rem solid rgb(130, 130, 240);
+		background-color: rgb(163, 163, 251);
+		margin: 0.2rem;
+		list-style: none;
+	}
+
+	.payments {
+		list-style: none;
+	}
+</style>
+<body>
+	<h1>Websocket</h1>
+	<form action="http://localhost:4000" method="get" id="form">
+		<div class="hidden loading-container" id="loading">loading...<div class="loading"></div></div>
+		<input type="submit" value="pagar" class="submit" id="submit">
+	</form>
+
+	<div>
+		<ul id="payments">
+
+		</ul>
+	</div>
+	<script>
+		const form = document.getElementById('form');
+		const submit = document.getElementById('submit');
+		const loading = document.getElementById('loading');
+		
+		form.addEventListener('submit', function(event) {
+			event.preventDefault();
+			loading.classList.remove('hidden');
+			fetch('http://localhost:4000');
+		});
+
+		const socket = new WebSocket('ws://localhost:8080');
+		
+		socket.onmessage = function(event) {
+			const payments = document.getElementById('payments');
+			const oldPayments = payments.innerHTML;
+			const data = event.data;
+			payments.innerHTML = oldPayments + `<li class="item">${data}</li>`;
+			loading.classList.add('hidden');
+		};
+	</script>
+</body>
+</html>
