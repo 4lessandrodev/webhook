@@ -53,7 +53,7 @@ app.get('/', async (req, res) => {
 
 	console.log('Request to Gateway: ', response.status);
 
-	res.status(200).json({ status: 'ok' });
+	res.status(200).json({ status: 'pagamento adicionado à fila' });
 });
 
 app.listen(4000, () => console.log('Running on localhost:4000'));

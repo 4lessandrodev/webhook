@@ -12,6 +12,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		background-color: #ededed;
 	}
 
 	form {
@@ -73,18 +74,31 @@
 		list-style: none;
 	}
 
-	.payments {
+	#payments {
 		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.container {
+		display: flex;
+		flex-direction: column;
+		max-width: 90%;
+		min-width: 90%;
+		background-color: white;
+		margin: 1rem;
+		padding: 0.5rem;
 	}
 </style>
 <body>
-	<h1>Websocket</h1>
+	<h1>Pagamentos Solicitados: <span id="totalSolicitado">0</span></h1>
 	<form action="http://localhost:4000" method="get" id="form">
 		<div class="hidden loading-container" id="loading">loading...<div class="loading"></div></div>
 		<input type="submit" value="pagar" class="submit" id="submit">
 	</form>
 
-	<div>
+	<div class="container">
+		<h1>Pagamentos Processados: <span id="totalProcessado">0</span></h1>
 		<ul id="payments">
 
 		</ul>
@@ -93,9 +107,15 @@
 		const form = document.getElementById('form');
 		const submit = document.getElementById('submit');
 		const loading = document.getElementById('loading');
+		const totalSolicitadoEl = document.getElementById('totalSolicitado');
+		const totalProcessadoEl = document.getElementById('totalProcessado');
+		let totalSolicitado = 0;
+		let totalProcessado = 0;
 		
 		form.addEventListener('submit', function(event) {
 			event.preventDefault();
+			totalSolicitado = totalSolicitado + 1;
+			totalSolicitadoEl.innerText = totalSolicitado;
 			loading.classList.remove('hidden');
 			fetch('http://localhost:4000');
 		});
@@ -106,6 +126,8 @@
 			const payments = document.getElementById('payments');
 			const oldPayments = payments.innerHTML;
 			const data = event.data;
+			totalProcessado = totalProcessado + 1;
+			totalProcessadoEl.innerText = totalProcessado;
 			payments.innerHTML = oldPayments + `<li class="item">${data}</li>`;
 			loading.classList.add('hidden');
 		};
